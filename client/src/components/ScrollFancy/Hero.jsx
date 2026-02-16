@@ -156,6 +156,7 @@ const GsapScrubber = () => {
                             pointerEvents: "none",
                             textAlign: "center",
                             fontFamily: "system-ui, -apple-system, sans-serif",
+                            textShadow: "0,0,10px #000"
                         }}
                     >
                         {word}
