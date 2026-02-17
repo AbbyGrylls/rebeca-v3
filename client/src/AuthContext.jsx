@@ -22,6 +22,7 @@ import {
 } from "@mui/icons-material";
 const AuthContext = createContext();
 import { loginWithGoogle, logoutUser, checkAuthStatus, getAllEvents, getAllTeams } from "./services/api";
+import { googleLogout } from "@react-oauth/google";
 
 export const skeleton = [
     { id: 1, team: "Secretary General", members: [], icon: <AdminPanelSettings /> },
@@ -45,28 +46,6 @@ export const skeleton = [
     { id: 19, team: "BECA Magazine", members: [], icon: <MenuBook /> },
 ];
 
-const teamNameToId = {
-    "Secretary General": 1,
-    Finance: 2,
-    Cultural: 3,
-    Event: 4,
-    "Resource Information": 5,
-    "Travel & Logistics": 6,
-    Sponsorship: 7,
-    Publication: 8,
-    Publicity: 9,
-    "Stage Decoration": 10,
-    "Business & Alumni Meet": 11,
-    "Competition and Seminars": 12,
-    "Web Development": 13,
-    Refreshments: 14,
-    Volunteers: 15,
-    Photography: 16,
-    "Joint Secretary": 17,
-    "Fixed Signatory": 18,
-    "BECA Magazine": 19,
-};
-
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [userLoad, setUserLoad] = useState(false);
@@ -85,6 +64,9 @@ export const AuthProvider = ({ children }) => {
         } catch (err) {
             showNotification(`Err: ${err}`, 'error');
         }
+    }, []);
+
+    useEffect(() => {
         // check auth status
         const initAuth = async () => {
             setUserLoad(true);
@@ -94,24 +76,27 @@ export const AuthProvider = ({ children }) => {
                 console.log(res);
 
                 if (res.data.status === "success") {
+                    console.log("login success")
                     setUser(res.data.data.user);
+                    showNotification(`Welcome, ${res.data.data.user.name}`, 'success')
+                } else {
+                    showNotification(`Error occured while logging in the user.`, 'error')
                 }
             } catch (err) {
                 setUser(null);
-                showNotification(`Err: ${err}`, 'error')
+                showNotification(`${err.response.data.message}`, 'error')
             } finally {
                 setUserLoad(false);
             }
         };
 
         initAuth();
-        console.log(allEvents);
-        console.log(allTeams);
+        console.log("What we set as user:")
         console.log(user)
     }, []);
 
     const handleLoginSuccess = async (response) => {
-        setLoading(true);
+        setUserLoad(true);
         try {
             const res = await loginWithGoogle(response.credential);
             setUser(res.data.data.user);
@@ -120,20 +105,20 @@ export const AuthProvider = ({ children }) => {
             console.log("Login Failed on Backend:", err.response?.data || err.message);
             showNotification("Login failed. Please try again.", "error");
         } finally {
-            setLoading(false);
+            setUserLoad(false);
         }
     };
 
     const handleLogout = async () => {
         try {
-            await logoutAdmin();
+            await logoutUser();
             googleLogout();
             setUser(null);
             localStorage.removeItem("session");
-            showAlert("Logged out successfully", "success");
+            showNotification("Logged out successfully", "success");
         } catch (err) {
             console.error("Logout failed:", err);
-            showAlert("Logout failed", "error");
+            showNotification(`Logout failed: ${err.message}`, "error");
         }
     };
 
