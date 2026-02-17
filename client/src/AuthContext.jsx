@@ -22,6 +22,7 @@ import {
 } from "@mui/icons-material";
 const AuthContext = createContext();
 import { loginWithGoogle, logoutUser, checkAuthStatus, getAllEvents, getAllTeams } from "./services/api";
+import { googleLogout } from "@react-oauth/google";
 
 export const skeleton = [
     { id: 1, team: "Secretary General", members: [], icon: <AdminPanelSettings /> },
@@ -85,6 +86,9 @@ export const AuthProvider = ({ children }) => {
         } catch (err) {
             showNotification(`Err: ${err}`, 'error');
         }
+    }, []);
+
+    useEffect(() => {
         // check auth status
         const initAuth = async () => {
             setUserLoad(true);
@@ -94,24 +98,27 @@ export const AuthProvider = ({ children }) => {
                 console.log(res);
 
                 if (res.data.status === "success") {
+                    console.log("login success")
                     setUser(res.data.data.user);
+                    showNotification(`Welcome, ${res.data.data.user.name}`, 'success')
+                } else {
+                    showNotification(`Error occured while logging in the user.`, 'error')
                 }
             } catch (err) {
                 setUser(null);
-                showNotification(`Err: ${err}`, 'error')
+                showNotification(`${err.response.data.message}`, 'error')
             } finally {
                 setUserLoad(false);
             }
         };
 
         initAuth();
-        console.log(allEvents);
-        console.log(allTeams);
+        console.log("What we set as user:")
         console.log(user)
     }, []);
 
     const handleLoginSuccess = async (response) => {
-        setLoading(true);
+        setUserLoad(true);
         try {
             const res = await loginWithGoogle(response.credential);
             setUser(res.data.data.user);
@@ -120,20 +127,20 @@ export const AuthProvider = ({ children }) => {
             console.log("Login Failed on Backend:", err.response?.data || err.message);
             showNotification("Login failed. Please try again.", "error");
         } finally {
-            setLoading(false);
+            setUserLoad(false);
         }
     };
 
     const handleLogout = async () => {
         try {
-            await logoutAdmin();
+            await logoutUser();
             googleLogout();
             setUser(null);
             localStorage.removeItem("session");
-            showAlert("Logged out successfully", "success");
+            showNotification("Logged out successfully", "success");
         } catch (err) {
             console.error("Logout failed:", err);
-            showAlert("Logout failed", "error");
+            showNotification(`Logout failed: ${err.message}`, "error");
         }
     };
 
