@@ -8,7 +8,26 @@ import Hero from "../../components/ScrollFancy/Hero";
 import CountDown from "../../components/CountDown/CountDown";
 import Schedule from "../Schedule_new/Schedule"
 
-const artists = []
+const artists = [
+    { name: "Amit Mishra", img: "AmitMishra.png" },
+    { name: "Anupam Roy Band", img: "AnupamRoyBand.png" },
+    { name: "Anurag Halder", img: "anuraghalder.png" },
+    { name: "Arunashish Roy", img: "ArunashishRoy.png" },
+    { name: "Ash King", img: "ashking.png" },
+    { name: "Avoid Rafa", img: "avoidrafa.png" },
+    { name: "Distorted Chromosomes", img: "destortedchromosomes.png" },
+    { name: "DJ Neelashree", img: "djneelashree.png" },
+    { name: "DJ Raxo", img: "djraxo.png" },
+    { name: "DJ Roop", img: "djroop.png" },
+    { name: "Fakir Band", img: "FakirBand.png" },
+    { name: "Jannat Sufi Band", img: "JannatSufiBand.png" },
+    { name: "MD Irfan", img: "mdirfan.png" },
+    { name: "M Sonic", img: "MSonic.png" },
+    { name: "Pata", img: "pata.png" },
+    { name: "Pritam Roy", img: "pritamroy.png" },
+    { name: "Prithbi", img: "prithbi.png" },
+    { name: "Senjuti Das", img: "SenjutiDas.png" }
+]
 
 const Home = () => {
     return (
@@ -24,7 +43,7 @@ const Home = () => {
                 </div>
             </section>
             <section className="section-3">
-                <h1 className="date">MARCH 20-23</h1>
+                <h1 className="date">MARCH 19-22</h1>
                 <h4>Lords' Ground, IIEST Shibpur</h4>
                 <p>
                     Prepare to be swept away as you put your best foot forward in this epic celebration of creativity
@@ -35,7 +54,7 @@ const Home = () => {
                 <Heading title={"ARTISTS"} />
                 <ArtistList artists={artists} />
             </section>
-            <section className="section-5">
+            <section className="section-5" style={{marginTop: "8rem"}}>
                 <Heading title={"SCHEDULE"} />
                 <Schedule />
             </section>
