@@ -100,8 +100,10 @@ export default function EventRegister() {
     const [isreg, setIsreg] = useState(false);
     const [errors, setErrors] = useState({});
     const curEvent = allEvents.filter((ev) => ev.slug === eventSlug)[0];
-    const takePay = curEvent?.regfee === 0 || user?.email.endsWith("iiests.ac.in");
-
+    const takePay = (curEvent?.regfee !== 0) && (!user?.email.endsWith("iiests.ac.in"));
+    console.log(curEvent?.regfee !== 0)
+    console.log(!user?.email.endsWith("iiests.ac.in"))
+    console.log(user?.email)
     const [formData, setFormData] = useState({
         userId: user?._id,
         teamName: "",
@@ -172,7 +174,8 @@ export default function EventRegister() {
     
         // 3. Team Members & Phone Validation
         // 3.1 Team member length validation
-        const teamLen = formData.teamMem.length
+        var teamLen = formData.teamMem.length;
+        if(teamLen === 0) teamLen++; // To denote user is the lone member
         if (teamLen < curEvent.minTeamSize || teamLen > curEvent.maxTeamSize) {
             tempErrors.teamMem = `Team Members must be within ${curEvent.minTeamSize} and ${curEvent.maxTeamSize}`
         }
@@ -372,12 +375,12 @@ export default function EventRegister() {
                             <>
                                 <Typography variant="h6">Payment Details</Typography>
                                 <Typography variant="body2" sx={{ my: 2 }}>
-                                    Scan QR to pay ₹{curEvent.regfee === null ? 1 : 0} for <b>{curEvent.name}</b>
+                                    Scan QR to pay <b>₹{curEvent?.regfee}</b> for <b>{curEvent.name}</b>
                                 </Typography>
                                 <img
-                                    src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=PayFor-${eventSlug}`}
+                                    src={`/assets/payment-qr.webp`}
                                     alt="QR"
-                                    style={{ borderRadius: "8px", border: "1px solid #eee", marginBottom: "2rem" }}
+                                    style={{ borderRadius: "8px", border: "1px solid #eee", marginBottom: "2rem", width: "100%" }}
                                 />
                                 <TextField
                                     fullWidth

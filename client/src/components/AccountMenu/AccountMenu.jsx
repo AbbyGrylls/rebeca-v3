@@ -13,7 +13,7 @@ import {
 import { Settings, Logout } from "@mui/icons-material"; // Import icons
 import { useAuth } from "../../AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
 
 import "./AccountMenu.css";
 
@@ -141,11 +141,14 @@ export default function AccountMenu() {
             </Menu>
         </React.Fragment>
     ) : (
-    <button className="google-btn" onClick={() => login()}>
-      <span className="google-icon">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" />
-      </span>
-      <span className="google-text">Sign in</span>
-    </button>
+    <GoogleLogin
+            onSuccess={handleSuccess}
+            onError={() => console.error("Login Failed")}
+            disabled={userLoad}
+            theme="filled_black"
+            logo_alignment="center"
+            shape="circle"
+            text="signin"
+        />
     );
 }
